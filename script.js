@@ -14,26 +14,29 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 });
 
 // Active link on scroll
-const sections = document.querySelectorAll("section");
-const navA = document.querySelectorAll(".nav-links a");
+// Active link on scroll (safe)
+const sections = document.querySelectorAll("section[id]");
+const navLinksList = document.querySelectorAll(".nav-links a");
 
 window.addEventListener("scroll", () => {
-  let current = "";
+  let scrollY = window.pageYOffset;
 
   sections.forEach(section => {
-    const sectionTop = section.offsetTop - 120;
-    if (pageYOffset >= sectionTop) {
-      current = section.getAttribute("id");
-    }
-  });
+    const sectionHeight = section.offsetHeight;
+    const sectionTop = section.offsetTop - 140;
+    const sectionId = section.getAttribute("id");
 
-  navA.forEach(a => {
-    a.classList.remove("active");
-    if (a.getAttribute("href") === `#${current}`) {
-      a.classList.add("active");
+    if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+      navLinksList.forEach(link => {
+        link.classList.remove("active");
+        document
+          .querySelector('.nav-links a[href*=' + sectionId + ']')
+          ?.classList.add("active");
+      });
     }
   });
 });
+
 
 // Reveal animation on scroll
 const reveals = document.querySelectorAll(".reveal");
@@ -70,7 +73,7 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
-  note.innerText = "Message received successfully ✅ (Demo mode)";
+  note.innerText = "Message received successfully.";
   form.reset();
 
   // Optional: Open WhatsApp with message
